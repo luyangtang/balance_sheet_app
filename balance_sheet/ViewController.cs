@@ -1,5 +1,6 @@
 ﻿using System;
-
+using System.IO;
+using SQLite;
 using AppKit;
 using Foundation;
 
@@ -7,7 +8,28 @@ namespace balance_sheet
 {
     public partial class ViewController : NSViewController
     {
+        //db
+        public static string DbName = "SQLitedb.db3";
+        public static string DbPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), DbName);
 
+        public void CreateDB(string dbPath)
+        {
+            try
+            {
+                var db = new SQLiteConnection(dbPath);
+                db.CreateTable<Balance>();
+                db.CreateTable<InitialValue>();
+            } catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
+        }
+
+
+        public string GetDbPath()
+        {
+            return DbPath;
+        }
 
 
         //AddRecord button clicked
@@ -15,9 +37,69 @@ namespace balance_sheet
         partial void AddRecord(NSButton sender)
         {
 
-            //throw new NotImplementedException();
-            MyConsole.StringValue = string.Format("The button has been clicked {0} time{1}.", ++numberOfTimesClicked, (numberOfTimesClicked < 2) ? "" : "s");
+            //Push data 
+            Balance newBalance = new Balance(DateForm.StringValue, DescForm.StringValue, AmountForm.DoubleValue);
+            var conn = new SQLite.SQLiteConnection(DbPath);
+            conn.Insert(newBalance);
+            PopulateTable();
+
+            clearAll();
         }
+
+
+        //clear the content and populate table
+        private void clearAll()
+        {
+            // clear the input
+            DateForm.DateValue = (NSDate)DateTime.Today;
+            DescForm.StringValue = "";
+            AmountForm.DoubleValue = 0;
+        }
+
+        private void PopulateTable()
+        {
+            //Connect to db
+            CreateDB(DbPath);
+            var conn = new SQLite.SQLiteConnection(DbPath);
+            var cmd = new SQLite.SQLiteCommand(conn);
+            var results = conn.Table<Balance>().Where(x => true);
+            var DataSource = new BalanceTableDataSource();
+
+            double totalBalance = 0;
+
+            foreach (var r in results)
+            {
+                DataSource.Balances.Add(new Balance(r.Date, r.Desc, r.Amount));
+                totalBalance += r.Amount;
+            }
+                
+
+            //populate table
+            BalanceTable.DataSource = DataSource;
+            BalanceTable.Delegate = new BalanceTableDelegate(this, DataSource);
+
+            // populate initial
+            double initialValue = 1000;
+            try
+            {
+                initialValue = conn.Table<InitialValue>().OrderByDescending(x => x.id).First().Value;
+
+            } catch (Exception e)
+            {
+                conn.Insert(new InitialValue(initialValue));
+            }
+            InitialLabel.StringValue = string.Format("(Init. amt: {0})", initialValue);
+
+
+            //Populate total
+            TotalLabel.StringValue = string.Format("Total: {0}", initialValue - totalBalance);
+
+            
+        }
+
+
+
+
 
 
         //populate table
@@ -25,22 +107,16 @@ namespace balance_sheet
         {
             base.AwakeFromNib();
 
-            //create data source
-            var DataSource = new BalanceTableDataSource();
-            DataSource.Balances.Add(new Balance("8-15", "car", -199));
-            DataSource.Balances.Add(new Balance("8-16", "salary", 200));
-            DataSource.Balances.Add(new Balance("8-17", "makeup", -9));
+            clearAll();
+            PopulateTable();
 
-            //populate table
-            BalanceTable.DataSource = DataSource;
-            BalanceTable.Delegate = new BalanceTableDelegate(this, DataSource);
+
         }
-
         public void ReloadTable()
         {
             BalanceTable.ReloadData();
+            PopulateTable();
         }
-
 
 
 
@@ -54,7 +130,7 @@ namespace balance_sheet
             base.ViewDidLoad();
 
             // Do any additional setup after loading the view.
-            MyConsole.StringValue = "Button has not been clicked yet";
+            //MyConsole.StringValue = "Button has not been clicked yet";
         }
 
         public override NSObject RepresentedObject

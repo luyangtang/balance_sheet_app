@@ -19,16 +19,28 @@ namespace balance_sheet
 		AppKit.NSTableColumn AmountColumn { get; set; }
 
 		[Outlet]
+		AppKit.NSTextField AmountForm { get; set; }
+
+		[Outlet]
 		AppKit.NSTableView BalanceTable { get; set; }
 
 		[Outlet]
 		AppKit.NSTableColumn DateColumn { get; set; }
 
 		[Outlet]
+		AppKit.NSDatePicker DateForm { get; set; }
+
+		[Outlet]
 		AppKit.NSTableColumn DescColumn { get; set; }
 
 		[Outlet]
-		AppKit.NSTextField MyConsole { get; set; }
+		AppKit.NSTextField DescForm { get; set; }
+
+		[Outlet]
+		AppKit.NSTextField InitialLabel { get; set; }
+
+		[Outlet]
+		AppKit.NSTextField TotalLabel { get; set; }
 
 		[Action ("addRecord:")]
 		partial void addRecord (AppKit.NSButton sender);
@@ -43,14 +55,14 @@ namespace balance_sheet
 				ActionsColumn = null;
 			}
 
-			if (ActionsColumn != null) {
-				ActionsColumn.Dispose ();
-				ActionsColumn = null;
-			}
-
 			if (AmountColumn != null) {
 				AmountColumn.Dispose ();
 				AmountColumn = null;
+			}
+
+			if (AmountForm != null) {
+				AmountForm.Dispose ();
+				AmountForm = null;
 			}
 
 			if (BalanceTable != null) {
@@ -63,14 +75,29 @@ namespace balance_sheet
 				DateColumn = null;
 			}
 
+			if (DateForm != null) {
+				DateForm.Dispose ();
+				DateForm = null;
+			}
+
 			if (DescColumn != null) {
 				DescColumn.Dispose ();
 				DescColumn = null;
 			}
 
-			if (MyConsole != null) {
-				MyConsole.Dispose ();
-				MyConsole = null;
+			if (DescForm != null) {
+				DescForm.Dispose ();
+				DescForm = null;
+			}
+
+			if (TotalLabel != null) {
+				TotalLabel.Dispose ();
+				TotalLabel = null;
+			}
+
+			if (InitialLabel != null) {
+				InitialLabel.Dispose ();
+				InitialLabel = null;
 			}
 		}
 	}

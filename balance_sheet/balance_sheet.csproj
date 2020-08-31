@@ -47,6 +47,11 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="Xamarin.Mac" />
+    <Reference Include="Mono.Data.Sqlite" />
+    <Reference Include="Mono.CSharp" />
+    <Reference Include="Mono.Data.Tds" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Data.Services.Client" />
   </ItemGroup>
   <ItemGroup>
     <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\Contents.json" />
@@ -68,6 +73,7 @@
   <ItemGroup>
     <None Include="Info.plist" />
     <None Include="Entitlements.plist" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Main.cs" />
@@ -79,6 +85,9 @@
     <Compile Include="Balance.cs" />
     <Compile Include="BalanceTableDataSource.cs" />
     <Compile Include="BalanceTableDelegate.cs" />
+    <Compile Include="SQLiteAsync.cs" />
+    <Compile Include="SQLite.cs" />
+    <Compile Include="InitialValue.cs" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Main.storyboard" />
