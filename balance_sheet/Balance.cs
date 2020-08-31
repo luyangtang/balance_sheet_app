@@ -1,4 +1,5 @@
 ﻿using System;
+using SQLite;
 
 
 namespace balance_sheet
@@ -7,7 +8,8 @@ namespace balance_sheet
     {
 
         //computed prop
-
+        [PrimaryKey, AutoIncrement]
+        public int id { get; set; }
         public string Date { get; set; } = "";
         public string Desc { get; set; } = "";
         public double Amount { get; set; } = 0;

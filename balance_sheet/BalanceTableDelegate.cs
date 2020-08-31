@@ -5,6 +5,7 @@ using CoreGraphics;
 using Foundation;
 using System.Collections;
 using System.Collections.Generic;
+using SQLite;
 
 namespace balance_sheet
 {
@@ -36,7 +37,7 @@ namespace balance_sheet
                 view.BackgroundColor = NSColor.Clear;
                 view.Bordered = false;
                 view.Selectable = false;
-                view.Editable = true;
+                view.Editable = false;
             }
 
             switch(tableColumn.Title)
@@ -81,7 +82,14 @@ namespace balance_sheet
                             if (result == 1001)
                             {
                                 // Remove the given row from the dataset
-                                DataSource.Balances.RemoveAt((int)btn.Tag);
+                                //DataSource.Balances.RemoveAt((int)btn.Tag);
+                                
+                                var conn = new SQLite.SQLiteConnection(Controller.GetDbPath());
+                                //conn.Insert(newBalance);
+                                conn.Delete(DataSource.Balances[(int)btn.Tag]);
+
+
+
                                 Controller.ReloadTable();
                             }
                         });
