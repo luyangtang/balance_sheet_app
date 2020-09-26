@@ -78,11 +78,13 @@ namespace balance_sheet
                         alert.AddButton("Delete");
                         alert.BeginSheetForResponse(Controller.View.Window, (result) =>
                         {
+
                             // Should we delete the requested row?
                             if (result == 1001)
                             {
                                 // Remove the given row from the dataset
                                 //DataSource.Balances.RemoveAt((int)btn.Tag);
+
                                 
                                 var conn = new SQLite.SQLiteConnection(Controller.GetDbPath());
                                 //conn.Insert(newBalance);

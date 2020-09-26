@@ -69,7 +69,7 @@ namespace balance_sheet
 
             foreach (var r in results)
             {
-                DataSource.Balances.Add(new Balance(r.Date, r.Desc, r.Amount));
+                DataSource.Balances.Add(new Balance(r.Id, r.Date, r.Desc, r.Amount));
                 totalBalance += r.Amount;
             }
                 
