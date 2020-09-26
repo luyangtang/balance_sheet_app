@@ -58,7 +58,7 @@ namespace balance_sheet
                     //create button
                     var deleteButton = new NSButton(new CGRect(0, 0, 81, 16));
                     deleteButton.SetButtonType(NSButtonType.MomentaryPushIn);
-                    deleteButton.Title = "Delete";
+                    deleteButton.Title = "删除";
                     deleteButton.Tag = row;
 
                     // Wireup events
@@ -74,8 +74,8 @@ namespace balance_sheet
                             InformativeText = $"Are you sure you want to delete the record? This operation cannot be undone.",
                             MessageText = $"Delete?",
                         };
-                        alert.AddButton("Cancel");
-                        alert.AddButton("Delete");
+                        alert.AddButton("取消");
+                        alert.AddButton("删除");
                         alert.BeginSheetForResponse(Controller.View.Window, (result) =>
                         {
 

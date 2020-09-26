@@ -3,6 +3,7 @@ using System.IO;
 using SQLite;
 using AppKit;
 using Foundation;
+using CoreGraphics;
 
 namespace balance_sheet
 {
@@ -45,6 +46,59 @@ namespace balance_sheet
 
             clearAll();
         }
+
+
+        //Update initial
+        partial void UpdateInitAmt(NSButton updateInitBtn)
+        {
+            Console.WriteLine(0000);
+            ////Push data
+            var conn = new SQLite.SQLiteConnection(DbPath);
+            var initial = conn.Table<InitialValue>().OrderByDescending(x => x.id).First();
+            var initialValue = initial.Value;
+            var initialValueId = initial.id;
+
+            // Wireup events
+            updateInitBtn.Activated += (sender, e) => {
+                // Get button and product
+                var btn = sender as NSButton;
+
+                // Configure alert
+                var alert = new NSAlert()
+                {
+                    AlertStyle = NSAlertStyle.Informational,
+                    InformativeText = $"可以修改你的初始Money",
+                    MessageText = $"修改初始",
+                };
+                alert.AddButton("取消");
+                alert.AddButton("确定");
+
+                // initial value override
+                var input = new NSTextField(new CGRect(0, 0, 300, 20));
+                input.StringValue = String.Format("{0}",initialValue);
+                alert.AccessoryView = input;
+                alert.Layout();
+
+                alert.BeginSheetForResponse(View.Window, (result) =>
+                {
+                    Console.WriteLine(result);
+                    // Should we delete the requested row?
+                    if (result == 1001)
+                    {
+                        // update init value
+                        
+                        conn.Update(new InitialValue(float.Parse(input.StringValue)));
+                        Console.WriteLine(conn.Update(new InitialValue(float.Parse(input.StringValue), initialValueId)));
+                        Console.WriteLine(conn.Table<InitialValue>().OrderByDescending(x => x.id).First().Value);
+                        ReloadTable();
+                    }
+                });
+
+            };
+
+            
+        }
+
 
 
         //clear the content and populate table
@@ -92,7 +146,7 @@ namespace balance_sheet
 
 
             //Populate total
-            TotalLabel.StringValue = string.Format("Total: {0}", initialValue - totalBalance);
+            TotalLabel.StringValue = string.Format("结余: {0}", initialValue + totalBalance);
 
             
         }

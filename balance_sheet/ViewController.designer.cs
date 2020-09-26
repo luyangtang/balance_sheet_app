@@ -47,6 +47,12 @@ namespace balance_sheet
 
 		[Action ("AddRecord:")]
 		partial void AddRecord (AppKit.NSButton sender);
+
+		[Action ("updateInitAmt:")]
+		partial void updateInitAmt (Foundation.NSObject sender);
+
+		[Action ("UpdateInitAmt:")]
+		partial void UpdateInitAmt (AppKit.NSButton sender);
 		
 		void ReleaseDesignerOutlets ()
 		{
@@ -90,14 +96,14 @@ namespace balance_sheet
 				DescForm = null;
 			}
 
-			if (TotalLabel != null) {
-				TotalLabel.Dispose ();
-				TotalLabel = null;
-			}
-
 			if (InitialLabel != null) {
 				InitialLabel.Dispose ();
 				InitialLabel = null;
+			}
+
+			if (TotalLabel != null) {
+				TotalLabel.Dispose ();
+				TotalLabel = null;
 			}
 		}
 	}
