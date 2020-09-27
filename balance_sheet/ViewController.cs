@@ -33,13 +33,20 @@ namespace balance_sheet
         }
 
 
+        
+
+
         //AddRecord button clicked
         private int numberOfTimesClicked = 0;
         partial void AddRecord(NSButton sender)
         {
+            // date
+            NSDateFormatter dateFormat = new NSDateFormatter();
+            dateFormat.DateFormat = "yy/MM/dd eee";
+            dateFormat.ToString(DateForm.DateValue);
 
             //Push data 
-            Balance newBalance = new Balance(DateForm.StringValue, DescForm.StringValue, AmountForm.DoubleValue);
+            Balance newBalance = new Balance(dateFormat.ToString(DateForm.DateValue), DescForm.StringValue, AmountForm.DoubleValue);
             var conn = new SQLite.SQLiteConnection(DbPath);
             conn.Insert(newBalance);
             PopulateTable();
@@ -51,7 +58,6 @@ namespace balance_sheet
         //Update initial
         partial void UpdateInitAmt(NSButton updateInitBtn)
         {
-            Console.WriteLine(0000);
             ////Push data
             var conn = new SQLite.SQLiteConnection(DbPath);
             var initial = conn.Table<InitialValue>().OrderByDescending(x => x.id).First();
@@ -104,6 +110,8 @@ namespace balance_sheet
         //clear the content and populate table
         private void clearAll()
         {
+
+
             // clear the input
             DateForm.DateValue = (NSDate)DateTime.Today;
             DescForm.StringValue = "";

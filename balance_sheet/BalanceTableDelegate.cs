@@ -48,58 +48,56 @@ namespace balance_sheet
 
                 case "Description":
                     view.StringValue = DataSource.Balances[(int)row].Desc;
+                    view.Editable = true;
                     break;
 
                 case "Amount":
                     view.DoubleValue = DataSource.Balances[(int)row].Amount;
+                    view.Editable = true;
                     break;
 
                 case "Actions":
+
+                    ////////////
+                    // Delete //
+                    ////////////
+
+
                     //create button
-                    var deleteButton = new NSButton(new CGRect(0, 0, 81, 16));
+                    var deleteButton = new NSButton(new CGRect(0, 0, 35, 16));
                     deleteButton.SetButtonType(NSButtonType.MomentaryPushIn);
                     deleteButton.Title = "删除";
                     deleteButton.Tag = row;
 
                     // Wireup events
-                    deleteButton.Activated += (sender, e) => {
-                        // Get button and product
-                        var btn = sender as NSButton;
-                        var balance = DataSource.Balances[(int)btn.Tag];
-
-                        // Configure alert
-                        var alert = new NSAlert()
-                        {
-                            AlertStyle = NSAlertStyle.Informational,
-                            InformativeText = $"Are you sure you want to delete the record? This operation cannot be undone.",
-                            MessageText = $"Delete?",
-                        };
-                        alert.AddButton("取消");
-                        alert.AddButton("删除");
-                        alert.BeginSheetForResponse(Controller.View.Window, (result) =>
-                        {
-
-                            // Should we delete the requested row?
-                            if (result == 1001)
-                            {
-                                // Remove the given row from the dataset
-                                //DataSource.Balances.RemoveAt((int)btn.Tag);
-
-                                
-                                var conn = new SQLite.SQLiteConnection(Controller.GetDbPath());
-                                //conn.Insert(newBalance);
-                                conn.Delete(DataSource.Balances[(int)btn.Tag]);
-
-
-
-                                Controller.ReloadTable();
-                            }
-                        });
-
+                    deleteButton.Activated += (sender, e) =>
+                    {
+                        DeleteOnClick(sender, e);
                     };
 
                     // Add to view
                     view.AddSubview(deleteButton);
+
+
+                    //////////
+                    // Edit //
+                    //////////
+
+                    //create button
+                    var editButton = new NSButton(new CGRect(36, 0, 35, 16));
+                    editButton.SetButtonType(NSButtonType.MomentaryPushIn);
+                    editButton.Title = "修改";
+                    editButton.Tag = row;
+
+                    // Wireup events
+                    editButton.Activated += (sender, e) =>
+                    {
+                        EditOnClick(sender, e);
+                    };
+
+                    // Add to view
+                    view.AddSubview(editButton);
+
                     break;
 
 
@@ -108,5 +106,82 @@ namespace balance_sheet
 
             return view;
         }
+
+
+
+        // onclick event
+
+        private void EditOnClick(object sender, EventArgs e)
+        {
+            // Get button and product
+            var btn = sender as NSButton;
+            var currentBalance = DataSource.Balances[(int)btn.Tag];
+            //var newBalance =
+
+            // Configure alert
+            var alert = new NSAlert()
+            {
+                AlertStyle = NSAlertStyle.Informational,
+                InformativeText = $"确认要修改吗？",
+                MessageText = $"修改?",
+            };
+            alert.AddButton("取消");
+            alert.AddButton("修改");
+            alert.BeginSheetForResponse(Controller.View.Window, (result) =>
+            {
+
+                // Should we delete the requested row?
+                if (result == 1001)
+                {
+                    // Remove the given row from the dataset
+
+                    var conn = new SQLite.SQLiteConnection(Controller.GetDbPath());
+                    Console.WriteLine();
+                    conn.Update(DataSource.Balances[(int)btn.Tag]);
+
+                    Controller.ReloadTable();
+                }
+            });
+        }
+
+
+        private void DeleteOnClick(object sender, EventArgs e)
+        {
+            // Get button and product
+            var btn = sender as NSButton;
+            var balance = DataSource.Balances[(int)btn.Tag];
+
+            // Configure alert
+            var alert = new NSAlert()
+            {
+                AlertStyle = NSAlertStyle.Informational,
+                InformativeText = $"你真的要删掉我吗？>.<",
+                MessageText = $"Delete?",
+            };
+            alert.AddButton("取消");
+            alert.AddButton("删除");
+            alert.BeginSheetForResponse(Controller.View.Window, (result) =>
+            {
+
+                // Should we delete the requested row?
+                if (result == 1001)
+                {
+                    // Remove the given row from the dataset
+
+                    var conn = new SQLite.SQLiteConnection(Controller.GetDbPath());
+                    conn.Delete(DataSource.Balances[(int)btn.Tag]);
+
+                    Controller.ReloadTable();
+                }
+            });
+        }
+
+
+
+
     }
+
+
+
+    
 }
