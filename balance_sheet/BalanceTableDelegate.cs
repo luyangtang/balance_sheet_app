@@ -48,12 +48,12 @@ namespace balance_sheet
 
                 case "Description":
                     view.StringValue = DataSource.Balances[(int)row].Desc;
-                    view.Editable = true;
+                    //view.Editable = true;
                     break;
 
                 case "Amount":
                     view.DoubleValue = DataSource.Balances[(int)row].Amount;
-                    view.Editable = true;
+                    //view.Editable = true;
                     break;
 
                 case "Actions":
@@ -83,20 +83,24 @@ namespace balance_sheet
                     // Edit //
                     //////////
 
-                    //create button
-                    var editButton = new NSButton(new CGRect(36, 0, 35, 16));
-                    editButton.SetButtonType(NSButtonType.MomentaryPushIn);
-                    editButton.Title = "修改";
-                    editButton.Tag = row;
+                    ////create button
+                    //var editButton = new NSButton(new CGRect(36, 0, 35, 16));
+                    //editButton.SetButtonType(NSButtonType.MomentaryPushIn);
+                    //editButton.Title = "修改";
+                    //editButton.Tag = row;
 
-                    // Wireup events
-                    editButton.Activated += (sender, e) =>
-                    {
-                        EditOnClick(sender, e);
-                    };
+                    //// Wireup events
+                    //editButton.Activated += (sender, e) =>
+                    //{
+                        
+                    //    Console.WriteLine("Desc: {0}",String.Format(tableView.GetCell(0, row).StringValue));
+                    //    Console.WriteLine("Amt: {0}", String.Format(tableView.GetCell(1, row).StringValue));
+                    //    Console.WriteLine(tableView.ColumnForView((NSView) sender));
+                    //    EditOnClick(sender, e);
+                    //};
 
-                    // Add to view
-                    view.AddSubview(editButton);
+                    //// Add to view
+                    //view.AddSubview(editButton);
 
                     break;
 
@@ -109,6 +113,8 @@ namespace balance_sheet
 
 
 
+
+
         // onclick event
 
         private void EditOnClick(object sender, EventArgs e)
@@ -116,7 +122,7 @@ namespace balance_sheet
             // Get button and product
             var btn = sender as NSButton;
             var currentBalance = DataSource.Balances[(int)btn.Tag];
-            //var newBalance =
+            //var newBalance = Balance(currentBalance.Id, currentBalance.)
 
             // Configure alert
             var alert = new NSAlert()
@@ -136,7 +142,6 @@ namespace balance_sheet
                     // Remove the given row from the dataset
 
                     var conn = new SQLite.SQLiteConnection(Controller.GetDbPath());
-                    Console.WriteLine();
                     conn.Update(DataSource.Balances[(int)btn.Tag]);
 
                     Controller.ReloadTable();
