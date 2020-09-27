@@ -124,7 +124,7 @@ namespace balance_sheet
             CreateDB(DbPath);
             var conn = new SQLite.SQLiteConnection(DbPath);
             var cmd = new SQLite.SQLiteCommand(conn);
-            var results = conn.Table<Balance>().Where(x => true);
+            var results = conn.Table<Balance>().Where(x => true).OrderByDescending(x => x.Id);
             var DataSource = new BalanceTableDataSource();
 
             double totalBalance = 0;
